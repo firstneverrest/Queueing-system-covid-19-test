@@ -1,0 +1,9 @@
+.userTable {
+  border-collapse: collapse;
+}
+
+.userTable td,
+.userTable th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}

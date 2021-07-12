@@ -1,24 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import HomePage from './pages/HomePage';
+import AdminPage from './pages/AdminPage';
+import UserPage from './pages/UserPage';
+import AuthPage from './pages/AuthPage';
+import Layout from './Layout/Layout';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Redirect,
+  Route,
+} from 'react-router-dom';
+import { useContext } from 'react';
+import AuthContext from './store/auth-context';
 
 function App() {
+  const authCtx = useContext(AuthContext);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout>
+      <div className="container">
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              <HomePage />
+            </Route>
+            {!authCtx.isLoggedIn && (
+              <Route exact path="/auth">
+                <AuthPage />
+              </Route>
+            )}
+            {authCtx.isLoggedIn && (
+              <Route exact path="/admin">
+                <AdminPage />
+              </Route>
+            )}
+            {authCtx.isLoggedIn && (
+              <Route exact path="/user">
+                <UserPage />
+              </Route>
+            )}
+            <Route path="*">
+              <Redirect to="/" />
+            </Route>
+          </Switch>
+        </Router>
+      </div>
+    </Layout>
   );
 }
 

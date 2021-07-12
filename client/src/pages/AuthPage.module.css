@@ -1,0 +1,25 @@
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 8px;
+  max-width: 500px;
+}
+
+.loginForm label {
+  margin: 10px 0 2px 0;
+}
+
+.loginForm input {
+  padding: 4px;
+  margin: 0 0 6px 0;
+}
+
+.submitButton {
+  outline: none;
+  padding: 10px 100px;
+  background-color: #3da13d;
+  border: none;
+  margin-top: 20px;
+  color: #fff;
+  cursor: pointer;
+}

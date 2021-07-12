@@ -1,0 +1,15 @@
+h3 {
+  margin-top: 20px;
+}
+
+.userTable {
+  margin-top: 10px;
+  border-collapse: collapse;
+}
+
+.userTable td,
+.userTable th {
+  text-align: left;
+  border: 1px solid #ddd;
+  padding: 8px;
+}
