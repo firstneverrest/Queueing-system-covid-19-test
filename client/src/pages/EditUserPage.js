@@ -1,97 +1,97 @@
 import React from 'react';
 import { useState, useRef, useContext } from 'react';
-import styles from './AuthPage.module.css';
+import styles from './EditUserPage.module.css';
 import AuthContext from '../store/auth-context';
 import { useHistory } from 'react-router-dom';
 import Axios from 'axios';
 
-const SignupPage = () => {
-  const idInputRef = useRef();
-  const nameInputRef = useRef();
-  const birthdayInputRef = useRef();
-  const genderInputRef = useRef();
-  const addressInputRef = useRef();
-  const phoneNumberInputRef = useRef();
-  const usernameInputRef = useRef();
-  const passwordInputRef = useRef();
+const EditUserPage = () => {
+  const [errorOccurred, setErrorOccurred] = useState(false);
+  const [errorMessage, setErrorMessage] = useState();
+  const [userId, setUserId] = useState('');
+  const statusInputRef = useRef();
+  const testDateInputRef = useRef();
+  const actualTestDateInputRef = useRef();
   const history = useHistory();
 
   const authCtx = useContext(AuthContext);
-  const [errorOccurred, setErrorOccurred] = useState(false);
-  const [errorMessage, setErrorMessage] = useState();
+  const id = authCtx.getId();
 
-  const submitHandler = (e) => {
-    // const enteredUsername = UsernameInputRef.current.value;
-    // const enteredPassword = passwordInputRef.current.value;
+  const editStatus = (e) => {
+    e.preventDefault();
+    const enteredStatus = statusInputRef.current.value;
+    const enteredTestDate = testDateInputRef.current.value;
+    const enteredActualTestDate = actualTestDateInputRef.current.value;
+    const token = authCtx.token;
+
+    Axios.put('http://localhost:3001/user', {
+      id: id,
+      token: token,
+      status: enteredStatus,
+      testDate: enteredTestDate,
+      actualTestDate: enteredActualTestDate,
+    }).then((response) => {
+      console.log(response);
+      if (response.status === 200) {
+        setErrorOccurred(false);
+        setErrorOccurred(false);
+        history.replace('/admin');
+      } else {
+        // show an error message
+        setErrorMessage(response.data.error);
+        setErrorOccurred(true);
+      }
+    });
+  };
+
+  const backToAdmin = () => {
+    history.replace('/admin');
   };
 
   return (
     <React.Fragment>
-      <h1>Signup</h1>
-      <form className={styles.loginForm} onSubmit={submitHandler}>
-        <label htmlFor="username">Citizen Id</label>
-        <input type="text" id="id" name="id" required ref={idInputRef} />
-
-        <label htmlFor="name">Name</label>
-        <input type="text" id="name" name="name" required ref={nameInputRef} />
-        <label htmlFor="birthday">Birthday</label>
+      <h1>Edit User {id}</h1>
+      <form className={styles.loginForm} onSubmit={editStatus}>
+        <label htmlFor="status">Status</label>
         <input
           type="text"
-          id="birthday"
-          name="birthday"
+          id="status"
+          name="status"
           required
-          ref={birthdayInputRef}
-        />
-        <label htmlFor="gender">Gender</label>
-        <input
-          type="text"
-          id="gender"
-          name="gender"
-          required
-          ref={genderInputRef}
-        />
-        <label htmlFor="address">Address</label>
-        <input
-          type="text"
-          id="address"
-          name="address"
-          required
-          ref={addressInputRef}
-        />
-        <label htmlFor="phoneNumber">Phone Number</label>
-        <input
-          type="text"
-          id="phoneNumber"
-          name="phoneNumber"
-          required
-          ref={phoneNumberInputRef}
-        />
-        <label htmlFor="username">Username</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          required
-          ref={usernameInputRef}
+          ref={statusInputRef}
         />
 
-        <label htmlFor="password">Password</label>
+        <label htmlFor="name">Test Date</label>
         <input
-          type="password"
-          id="password"
-          name="password"
+          type="text"
+          id="testDate"
+          name="testDate"
           required
-          ref={passwordInputRef}
+          ref={testDateInputRef}
+        />
+
+        <label htmlFor="name">Actual Test Date</label>
+        <input
+          type="text"
+          id="actualTestDate"
+          name="actualTestDate"
+          required
+          ref={actualTestDateInputRef}
         />
 
         {errorOccurred && <p className={styles.error}>{errorMessage}</p>}
 
-        <button className={styles.submitButton} type="submit">
-          Sign up
-        </button>
+        <div className={styles.buttonContainer}>
+          <button className={styles.backButton} onClick={backToAdmin}>
+            Cancel
+          </button>
+          <button className={styles.submitButton} type="submit">
+            Save
+          </button>
+        </div>
       </form>
     </React.Fragment>
   );
 };
 
-export default SignupPage;
+export default EditUserPage;

@@ -24,7 +24,6 @@ const AuthPage = () => {
       username: enteredUsername,
       password: enteredPassword,
     }).then((response) => {
-      console.log(response);
       if (response.status === 200) {
         setErrorOccurred(false);
         setErrorOccurred(false);
@@ -35,6 +34,7 @@ const AuthPage = () => {
         if (response.data.url === '/admin') {
           history.replace('/admin');
         } else {
+          authCtx.setId(response.data.result[0].id);
           history.replace('/user');
         }
       } else {

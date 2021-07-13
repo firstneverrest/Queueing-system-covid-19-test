@@ -7,3 +7,13 @@
   border: 1px solid #ddd;
   padding: 8px;
 }
+
+.editButton {
+  outline: none;
+  padding: 0.7rem 3rem;
+  width: 100%;
+  background-color: #2482ad;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}

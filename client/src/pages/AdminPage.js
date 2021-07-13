@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Axios from 'axios';
+import AuthContext from '../store/auth-context';
+import { useHistory } from 'react-router-dom';
 import styles from './AdminPage.module.css';
 
 const AdminPage = () => {
   const [userList, setUserList] = useState([]);
   const [status, setStatus] = useState('');
-  const [id, setId] = useState('');
+  const authCtx = useContext(AuthContext);
+  const history = useHistory();
 
   useEffect(() => {
     getUsers();
@@ -17,11 +20,9 @@ const AdminPage = () => {
     });
   };
 
-  const editStatus = () => {
-    Axios.patch('http://localhost:3001/user', {
-      id: id,
-      status: status,
-    });
+  const editHandler = (id) => {
+    authCtx.setId(id);
+    history.replace('/edit');
   };
 
   // waiting, tested - waiting for result, tested - negative, tested - positive
@@ -29,7 +30,7 @@ const AdminPage = () => {
   return (
     <div className="Admin">
       <h2>Admin</h2>
-      <h3>User Data</h3>
+      <h3>All User Data</h3>
       <table className={styles.userTable}>
         <thead>
           <tr>
@@ -38,9 +39,11 @@ const AdminPage = () => {
             <th>Birthday</th>
             <th>Gender</th>
             <th>Address</th>
-            <th>PhoneNumber</th>
+            <th>Phone Number</th>
             <th>Status</th>
-            <th>Set Status</th>
+            <th>Test Date</th>
+            <th>Actual Test Date</th>
+            <th>Edit</th>
           </tr>
         </thead>
         {userList.map((value, key) => {
@@ -54,6 +57,16 @@ const AdminPage = () => {
                 <td>{value.address}</td>
                 <td>{value.phone_number}</td>
                 <td>{value.status}</td>
+                <td>{value.test_date}</td>
+                <td>{value.actual_test_date}</td>
+                <td>
+                  <button
+                    className={styles.editButton}
+                    onClick={() => editHandler(value.id)}
+                  >
+                    Edit User
+                  </button>
+                </td>
               </tr>
             </tbody>
           );

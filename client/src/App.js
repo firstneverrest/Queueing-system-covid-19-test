@@ -3,6 +3,7 @@ import AdminPage from './pages/AdminPage';
 import UserPage from './pages/UserPage';
 import AuthPage from './pages/AuthPage';
 import SignupPage from './pages/SignupPage';
+import EditUserPage from './pages/EditUserPage';
 import Layout from './Layout/Layout';
 import {
   BrowserRouter as Router,
@@ -36,6 +37,11 @@ function App() {
           {authCtx.isLoggedIn && (
             <Route path="/admin">
               <AdminPage />
+            </Route>
+          )}
+          {authCtx.isLoggedIn && (
+            <Route path="/edit">
+              <EditUserPage />
             </Route>
           )}
           <Route path="/signup">

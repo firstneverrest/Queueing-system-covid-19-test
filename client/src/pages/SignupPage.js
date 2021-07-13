@@ -21,8 +21,39 @@ const SignupPage = () => {
   const [errorMessage, setErrorMessage] = useState();
 
   const submitHandler = (e) => {
-    // const enteredUsername = UsernameInputRef.current.value;
-    // const enteredPassword = passwordInputRef.current.value;
+    e.preventDefault();
+    const enteredId = idInputRef.current.value;
+    const enteredName = nameInputRef.current.value;
+    const enteredBirthday = birthdayInputRef.current.value;
+    const enteredGender = genderInputRef.current.value;
+    const enteredAddress = addressInputRef.current.value;
+    const enteredPhoneNumber = phoneNumberInputRef.current.value;
+    const enteredUsername = usernameInputRef.current.value;
+    const enteredPassword = passwordInputRef.current.value;
+    const token = authCtx.token;
+
+    Axios.post('http://localhost:3001/new', {
+      token: token,
+      id: enteredId,
+      name: enteredName,
+      birthday: enteredBirthday,
+      gender: enteredGender,
+      address: enteredAddress,
+      phoneNumber: enteredPhoneNumber,
+      username: enteredUsername,
+      password: enteredPassword,
+    }).then((response) => {
+      console.log(response);
+      if (response.status === 200) {
+        setErrorOccurred(false);
+        setErrorOccurred(false);
+        history.replace('/login');
+      } else {
+        // show an error message
+        setErrorMessage(response.data.error);
+        setErrorOccurred(true);
+      }
+    });
   };
 
   return (

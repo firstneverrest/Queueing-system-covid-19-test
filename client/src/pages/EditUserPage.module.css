@@ -14,10 +14,25 @@
   margin: 0 0 6px 0;
 }
 
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
 .submitButton {
   outline: none;
   padding: 10px 100px;
   background-color: #3da13d;
+  border: none;
+  margin-top: 20px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.backButton {
+  outline: none;
+  padding: 10px 100px;
+  background-color: #2482ad;
   border: none;
   margin-top: 20px;
   color: #fff;

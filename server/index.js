@@ -25,14 +25,19 @@ app.get('/users', (req, res) => {
 });
 
 app.post('/user', (req, res) => {
-  const id = req.body.id;
-  db.query(`SELECT * FROM general_user WHERE id=?`, [id], (err, result) => {
-    if (err) {
-      res.status(404).send({ error: 'Not found your id' });
-    } else {
-      res.status(200).send(result);
+  const token = req.body.token;
+  const data = jwt.verify(token, 'Queue');
+  db.query(
+    `SELECT * FROM general_user WHERE username=?`,
+    [data.username],
+    (err, result) => {
+      if (err) {
+        res.status(404).send({ error: 'Not found your id' });
+      } else {
+        res.status(200).send(result);
+      }
     }
-  });
+  );
 });
 
 app.post('/login', (req, res) => {
@@ -77,7 +82,67 @@ app.post('/login', (req, res) => {
   }
 });
 
-app.patch('/user', (req, res) => {});
+app.put('/user', (req, res) => {
+  const id = req.body.id;
+  const token = req.body.token;
+  const status = req.body.status;
+  const testDate = req.body.testDate;
+  const actualTestDate = req.body.actualTestDate;
+  const data = jwt.verify(token, 'Queue');
+  if (data.username === 'admin') {
+    db.query(
+      'UPDATE general_user SET status=?, test_date=?, actual_test_date=? WHERE id=?',
+      [status, testDate, actualTestDate, id],
+      (err, result) => {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send('completed');
+        }
+      }
+    );
+  } else {
+    res.status(403);
+  }
+});
+
+app.post('/new', (req, res) => {
+  const token = req.body.token;
+  const id = req.body.id;
+  const name = req.body.name;
+  const birthday = req.body.birthday;
+  const gender = req.body.gender;
+  const address = req.body.address;
+  const phoneNumber = req.body.phoneNumber;
+  const username = req.body.username;
+  const password = req.body.password;
+
+  db.query(
+    'INSERT INTO general_user (id, name, birthday, gender, address, phone_number, username, password, status, test_date, actual_test_date, idToken) VALUE(?,?,?,?,?,?,?,?,?,?,?,?)',
+    [
+      id,
+      name,
+      birthday,
+      gender,
+      address,
+      phoneNumber,
+      username,
+      password,
+      '',
+      '',
+      '',
+      '',
+    ],
+    (err, result) => {
+      console.log(err);
+      if (err) {
+        res.status(401).send(err);
+      } else {
+        res.send('completed');
+      }
+    }
+  );
+});
 
 app.listen('3001', () => {
   console.log('Server is running on port 3001');

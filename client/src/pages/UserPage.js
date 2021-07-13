@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
 import AuthContext from '../store/auth-context';
+import React, { useState, useEffect, useContext } from 'react';
 import Axios from 'axios';
 import styles from './UserPage.module.css';
 
@@ -7,7 +7,6 @@ const UserPage = () => {
   const authCtx = useContext(AuthContext);
   const [userData, setUserData] = useState([]);
   const [isData, setIsData] = useState(false);
-  const [id, setId] = useState('1111122222333');
 
   useEffect(() => {
     getUserData();
@@ -15,7 +14,7 @@ const UserPage = () => {
 
   const getUserData = () => {
     Axios.post('http://localhost:3001/user', {
-      id: id,
+      token: authCtx.token,
     }).then((response) => {
       if (response.status === 200) {
         setUserData(response.data);
