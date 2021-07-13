@@ -12,17 +12,19 @@ const AdminPage = () => {
   }, []);
 
   const getUsers = () => {
-    Axios.get('http://localhost:3001/user').then((response) => {
+    Axios.get('http://localhost:3001/users').then((response) => {
       setUserList(response.data);
     });
   };
 
   const editStatus = () => {
-    Axios.post('http://localhost:3001/edit', {
+    Axios.patch('http://localhost:3001/user', {
       id: id,
       status: status,
     });
   };
+
+  // waiting, tested - waiting for result, tested - negative, tested - positive
 
   return (
     <div className="Admin">
