@@ -23,21 +23,21 @@ function App() {
           <Route path="/" exact>
             <HomePage />
           </Route>
-          {/* {!authCtx.isLoggedIn && ( */}
-          <Route path="/auth">
-            <AuthPage />
-          </Route>
-          {/* )} */}
-          {/* {authCtx.isLoggedIn && ( */}
-          <Route path="/user">
-            <UserPage />
-          </Route>
-          {/* )} */}
-          {/* {authCtx.isLoggedIn && ( */}
-          <Route path="/admin">
-            <AdminPage />
-          </Route>
-          {/* )} */}
+          {!authCtx.isLoggedIn && (
+            <Route path="/auth">
+              <AuthPage />
+            </Route>
+          )}
+          {authCtx.isLoggedIn && (
+            <Route path="/user">
+              <UserPage />
+            </Route>
+          )}
+          {authCtx.isLoggedIn && (
+            <Route path="/admin">
+              <AdminPage />
+            </Route>
+          )}
           <Route path="/signup">
             <SignupPage />
           </Route>

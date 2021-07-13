@@ -1,47 +1,48 @@
 import React from 'react';
 import { useState, useRef, useContext } from 'react';
 import styles from './AuthPage.module.css';
-import { Link } from 'react-router-dom';
 import AuthContext from '../store/auth-context';
+import { useHistory } from 'react-router-dom';
 import Axios from 'axios';
 
 const AuthPage = () => {
   const UsernameInputRef = useRef();
   const passwordInputRef = useRef();
+  const history = useHistory();
 
   const authCtx = useContext(AuthContext);
   const [errorOccurred, setErrorOccurred] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState();
 
-  const submitHandler = () => {
+  const submitHandler = (e) => {
     const enteredUsername = UsernameInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
+
+    e.preventDefault();
 
     Axios.post('http://localhost:3001/login', {
       username: enteredUsername,
       password: enteredPassword,
-    })
-      .then((response) => {
-        if (response.ok) {
-          setErrorOccurred(false);
-          return response.json();
+    }).then((response) => {
+      console.log(response);
+      if (response.status === 200) {
+        setErrorOccurred(false);
+        setErrorOccurred(false);
+        const expirationTime = new Date(
+          new Date().getTime() + +response.data.expiresIn * 1000
+        );
+        authCtx.login(response.data.token, expirationTime.toISOString());
+        if (response.data.url === '/admin') {
+          history.replace('/admin');
         } else {
-          response.json().then((data) => {
-            // show an error message
-            if (data && data.error && data.error.message) {
-              setErrorOccurred(true);
-              setErrorMessage(data.error.message);
-            }
-          });
+          history.replace('/user');
         }
-      })
-      .then((data) => {
-        console.log(data);
-        // const expirationTime = new Date(
-        //   new Date().getTime() + +data.expiresIn * 1000
-        // );
-        // authCtx.login(data.idToken, expirationTime.toISOString());
-      });
+      } else {
+        // show an error message
+        setErrorMessage(response.data.error);
+        setErrorOccurred(true);
+      }
+    });
   };
 
   return (
@@ -66,11 +67,11 @@ const AuthPage = () => {
           ref={passwordInputRef}
         />
 
-        {errorOccurred && <p>{errorMessage}</p>}
+        {errorOccurred && <p className={styles.error}>{errorMessage}</p>}
 
-        <Link to="/admin" type="submit" className={styles.link}>
-          <button className={styles.submitButton}>Log in</button>
-        </Link>
+        <button className={styles.submitButton} type="submit">
+          Log in
+        </button>
       </form>
     </React.Fragment>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useRef, useContext } from 'react';
-import styles from './SignupPage.module.css';
+import styles from './AuthPage.module.css';
 import AuthContext from '../store/auth-context';
 import { useHistory } from 'react-router-dom';
 import Axios from 'axios';

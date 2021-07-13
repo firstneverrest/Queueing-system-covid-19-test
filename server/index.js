@@ -27,31 +27,54 @@ app.get('/users', (req, res) => {
 app.post('/user', (req, res) => {
   const id = req.body.id;
   db.query(`SELECT * FROM general_user WHERE id=?`, [id], (err, result) => {
-    res.send(result);
-    // if (err) {
-    //   res.status(404).send({ error: 'Not found your id' });
-    // } else {
-    //   res.status(200).send(result);
-    // }
+    if (err) {
+      res.status(404).send({ error: 'Not found your id' });
+    } else {
+      res.status(200).send(result);
+    }
   });
 });
 
 app.post('/login', (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
+  const expiresIn = 3600;
+  let token = jwt.sign({ username: username }, 'Queue');
 
-  db.query(
-    `SELECT id FROM general_user WHERE username=? AND password=?`,
-    [username, password],
-    (err, result) => {
-      if (err) {
-        res.status(404).send({ error: 'Invalid username or password' });
-      } else {
-        res.status(200).send(result);
+  if (username === 'admin') {
+    db.query(
+      `SELECT id FROM admin WHERE username=? AND password=?`,
+      [username, password],
+      (err, result) => {
+        if (result.length > 0) {
+          let url = '/admin';
+          if (username === 'admin' && password === 'admin') {
+            console.log(result);
+            res
+              .status(200)
+              .send({ result, url: url, expiresIn: expiresIn, token: token });
+          }
+        } else {
+          res.status(201).send({ error: 'Invalid Username or Password' });
+        }
       }
-    }
-  );
-  // const token = jwt.sign({ username: username }, 'Queue');
+    );
+  } else {
+    db.query(
+      `SELECT id FROM general_user WHERE username=? AND password=?`,
+      [username, password],
+      (err, result) => {
+        if (result.length > 0) {
+          let url = '/user';
+          res
+            .status(200)
+            .send({ result, url: url, expiresIn: expiresIn, token: token });
+        } else {
+          res.status(201).send({ error: 'Invalid Username or Password' });
+        }
+      }
+    );
+  }
 });
 
 app.patch('/user', (req, res) => {});
